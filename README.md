@@ -6,7 +6,7 @@ Eine datenschutzbewusste Web-App zur Untersuchung der Zuordnung von Farben und E
 
 ColorEmotionStudy ist eine eigenständige Forschungsanwendung, mit der untersucht wird, welche Emotionen Menschen mit unterschiedlichen Farben verbinden.
 
-Teilnehmende öffnen die Website über einen Link und beurteilen zehn nacheinander angezeigte Farben. Jede Farbe wird durch ihre RGB-Werte definiert. Die Teilnehmenden wählen für jede Farbe genau eine Emotion aus sieben vorgegebenen Optionen.
+Teilnehmende öffnen die Website über einen Link und beurteilen standardmäßig zehn, konfigurierbar fünfzehn, nacheinander angezeigte Farben. Jede Farbe wird durch unabhängig und gleichverteilt erzeugte RGB-Werte definiert. Die Teilnehmenden wählen für jede Farbe genau eine Emotion aus sieben vorgegebenen Optionen.
 
 Die Antworten werden unmittelbar gespeichert und können anschließend als CSV-Datei für statistische Analysen und Machine-Learning-Experimente exportiert werden.
 
@@ -17,7 +17,8 @@ Das Projekt ist für die eigenständige Forschung konzipiert und nicht von der I
 - Öffentlich erreichbare Web-App
 - Responsive Benutzeroberfläche für Smartphones, Tablets und Laptops
 - Anzeige einer einzelnen Farbe pro Durchgang
-- Zufällige Auswahl von zehn Farben pro Umfragesitzung
+- Kryptografisch unterstützte, kanalweise gleichverteilte RGB-Farben pro Umfragesitzung
+- Konfigurierbare Versuchslänge von 10 oder 15 Durchgängen
 - Speicherung der exakten RGB-Werte jeder gezeigten Farbe
 - Sieben feste Emotionskategorien
 - Genau eine Emotion pro Durchgang
@@ -83,13 +84,17 @@ Die Anwendung soll zunächst als schlanke, serverseitig ausgelieferte Web-App im
 2. Die Informationsseite erläutert Zweck, Ablauf und Datenschutz.
 3. Die Person beginnt freiwillig mit der Umfrage.
 4. Das System erzeugt eine zufällige Sitzungskennung.
-5. Die Anwendung wählt zehn Farben nach der konfigurierten Zufallsstrategie aus.
+5. Die Anwendung erzeugt 10 oder 15 RGB-Farben nach der konfigurierten Zufallsstrategie und speichert sie dauerhaft.
 6. Eine Farbe wird angezeigt.
 7. Die Person wählt eine der sieben Emotionen.
 8. Das Backend validiert und speichert die Antwort.
 9. Erst nach bestätigter Speicherung wird die nächste Farbe angezeigt.
-10. Nach zehn erfolgreichen Antworten wird eine Abschlussseite angezeigt.
+10. Nach der gespeicherten Anzahl erfolgreicher Antworten wird eine Abschlussseite angezeigt.
 11. Ein berechtigter Administrator kann die Daten als CSV exportieren.
+
+Die Gleichverteilung jedes RGB-Kanals über `0..255` ist keine Gleichverteilung
+wahrgenommener Farben. Zufällige identische RGB-Tripel werden nicht nachträglich
+entfernt.
 
 ## Datenmodell
 
@@ -99,13 +104,16 @@ Vorgesehene Felder:
 
 - `id`: interne technische Kennung
 - `session_id`: zufällige Kennung der Umfragesitzung
-- `trial_number`: Durchgang von 1 bis 10
+- `trial_number`: Durchgang von 1 bis 10 oder 15
 - `color_r`: Rotwert von 0 bis 255
 - `color_g`: Grünwert von 0 bis 255
 - `color_b`: Blauwert von 0 bis 255
 - `emotion`: eine der sieben erlaubten Kategorien
 - `color_order`: Position der Farbe innerhalb der Sitzung
 - `experiment_version`: Version der Versuchsdefinition
+- `trial_count`: unveränderlicher Snapshot der Versuchslänge (10 oder 15)
+- `response_timestamp`: serverseitiger Zeitstempel; bei historischen Antworten
+  kann er fehlen
 
 Ein Erstellungszeitpunkt darf nur aufgenommen werden, wenn er für einen dokumentierten Zweck benötigt wird.
 
@@ -144,6 +152,12 @@ Der CSV-Export muss folgende Anforderungen erfüllen:
 - Exakte RGB-Werte
 - Keine unnötigen personenbezogenen Daten
 - Export nur nach erfolgreicher Administrator-Authentifizierung
+
+Der CSV-Export enthält pro gespeicherter Antwort die dokumentierte Spaltenfolge
+und verwendet UTF-8 mit CRLF-Zeilenenden. Textfelder mit führendem `=`, `+`, `-`
+oder `@` erhalten ein Apostroph, damit Tabellenprogramme sie nicht als Formel
+ausführen. Unvollständige Sitzungen enthalten nur tatsächlich gespeicherte
+Antworten.
 
 Die CSV-Datei muss direkt mit Python und pandas verarbeitet werden können.
 

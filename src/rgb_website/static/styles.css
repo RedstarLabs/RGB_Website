@@ -20,6 +20,25 @@ button {
   font: inherit;
 }
 
+label,
+input {
+  display: block;
+}
+
+input {
+  width: 100%;
+  max-width: 32rem;
+  margin-top: 0.5rem;
+  padding: 0.7rem;
+  border: 1px solid #9aabb8;
+  border-radius: 0.4rem;
+}
+
+input:focus-visible {
+  outline: 3px solid #e09f3e;
+  outline-offset: 2px;
+}
+
 .page-shell {
   display: grid;
   min-height: 100vh;

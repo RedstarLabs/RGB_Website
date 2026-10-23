@@ -10,14 +10,14 @@ class ColorResponse(BaseModel):
     red: int = Field(ge=0, le=255)
     green: int = Field(ge=0, le=255)
     blue: int = Field(ge=0, le=255)
-    position: int = Field(ge=1, le=10)
+    position: int = Field(ge=1, le=15)
 
 
 class ExperimentStateResponse(BaseModel):
     session_id: str
     status: str
-    answered_count: int = Field(ge=0, le=10)
-    total_count: int = 10
+    answered_count: int = Field(ge=0, le=15)
+    total_count: int = Field(ge=10, le=15)
     next_color: ColorResponse | None
     experiment_version: str = PALETTE_VERSION
 
@@ -29,7 +29,7 @@ class StartExperimentResponse(ExperimentStateResponse):
 class SubmitResponseRequest(BaseModel):
     color_id: str = Field(min_length=1, max_length=32)
     emotion: Emotion
-    trial_number: int = Field(ge=1, le=10)
+    trial_number: int = Field(ge=1, le=15)
     experiment_version: str = Field(min_length=1, max_length=32)
 
 

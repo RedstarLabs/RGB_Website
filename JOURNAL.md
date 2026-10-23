@@ -73,3 +73,23 @@ nach erfolgreicher Backend-Bestätigung zur nächsten Farbe fortgesetzt.
 Die Oberfläche erzeugt keine Farben und implementiert keine eigene
 Versuchslogik. Sie speichert keine Sitzungs- oder Antwortdaten im Browser.
 Exporte und Administrationsfunktionen bleiben außerhalb dieser Phase.
+
+## 2026-10-23 – Phase 4: Zufallsfarben, Export und flexible Versuchslänge
+
+Die Versuchsfarben werden nun pro Kanal mit kryptografisch unterstütztem
+Zufall aus `0..255` erzeugt und als unveränderliche RGB-Snapshots gespeichert.
+Die Versuchslänge ist über `DEFAULT_TRIAL_COUNT` auf 10 oder 15 konfigurierbar
+und wird je Sitzung gespeichert. Zufällige RGB-Wiederholungen bleiben zulässig.
+
+Ein geschützter, gestreamter CSV-Export unter `/api/admin/export` wurde
+ergänzt. Er verwendet eine feste Spaltenreihenfolge, UTF-8, Sortierung nach
+Sitzung und Durchgang, `Cache-Control: no-store` und schützt Textfelder vor
+Spreadsheet-Formula-Injection. Die Authentifizierung nutzt das ausschließlich
+über `ADMIN_API_TOKEN` konfigurierte Token.
+
+Die Migration benennt relevante CHECK-Constraints und erhält sie bei
+SQLite-Tabellenneuerstellungen. Historische Zeitstempel bleiben nullable,
+wenn sie nicht zuverlässig rekonstruierbar sind. Unit-, API- und
+Exportprüfungen wurden ergänzt. Offene Punkte sind unter anderem
+Rate-Limiting, Token-Rotation, Produktionsbetrieb und wissenschaftliche sowie
+rechtliche Freigabe.

@@ -2,86 +2,68 @@
 
 ## Geltungsbereich
 
-Dieses Dokument beschreibt die für Phase 0 festgelegten Leitplanken und die
-in Phase 1 implementierte technische Grundlage. Die Anwendung ist nicht für
-eine reale Erhebung freigegeben.
+Dieses Dokument beschreibt die bis Phase 4 implementierte technische
+Grundlage. Die Anwendung ist nicht für eine reale Erhebung freigegeben.
 
-## Zielarchitektur
+## Zielarchitektur und Schichten
 
-Die Anwendung soll zunächst als schlanke, serverseitig ausgelieferte Web-App
-entstehen:
-
-- Ein Python-Backend mit FastAPI stellt die HTTP-Schnittstellen bereit.
+- FastAPI stellt HTTP-Schnittstellen und statische Dateien bereit.
 - Pydantic validiert externe Eingaben und Ausgaben.
-- Geschäftliche Versuchslogik bleibt von HTTP-Routen getrennt.
-- SQLAlchemy 2.x kapselt den Datenbankzugriff; Alembic verwaltet Migrationen.
-- SQLite dient der lokalen Entwicklung, PostgreSQL ist für den öffentlichen
-  Produktivbetrieb vorgesehen.
-- HTML, CSS und JavaScript bilden die Oberfläche. Ein separates
-  Frontend-Framework ist derzeit nicht vorgesehen.
+- Die Service-Schicht implementiert Versuchsregeln und Transaktionen.
+- Repositories kapseln den SQLAlchemy-Zugriff.
+- Alembic verwaltet schemaändernde Migrationen.
+- HTML, CSS und JavaScript bilden die schlanke Oberfläche ohne Tracking.
+- Die Export-Schicht streamt CSV-Zeilen ohne temporäre Exportdatei.
 
-Die minimale Backend- und Datenbankgrundlage ist in Phase 1 umgesetzt. Phase
-2 ergänzt die fachliche Versuchsdurchführung über eine API. Phase 3 bindet
-eine statische, serverseitig ausgelieferte HTML/CSS/JavaScript-Oberfläche an
-diese API an; Exporte und Administration bleiben späteren Phasen vorbehalten.
+SQLite dient der lokalen Entwicklung; PostgreSQL ist über `DATABASE_URL` für
+den Produktivbetrieb konfigurierbar. Datenbankmodelle und Migrationen bilden
+RGB-Werte, Positionen, Antworten, Status, Versuchslänge und Zeitstempel ab.
 
-## Geplante Schichten
+## Versuchserzeugung
 
-1. HTTP/API-Schicht: Routing, Protokollierung ohne unnötige personenbezogene
-   Daten und HTTP-Fehlerbehandlung.
-2. Service-Schicht: Sitzungsablauf, Validierung der Versuchsregeln und
-   Exportablauf ohne direkte HTTP-Abhängigkeit.
-3. Repository-Schicht: zentraler Zugriff auf persistierte Daten.
-4. Datenbankschicht: SQLAlchemy-Modelle und Alembic-Migrationen.
-5. Darstellungs- und statische Ressourcen: serverseitige Templates, CSS und
-   JavaScript ohne Tracking- oder Werbeskripte.
+`experiment.py` erzeugt pro Durchgang jeden RGB-Kanal unabhängig und
+gleichverteilt mit `secrets.randbelow(256)`. Die 10 oder 15 erzeugten Farben
+werden als `session_colors` gespeichert. Ihre IDs (`trial-1` usw.), Positionen
+und RGB-Werte bleiben nach dem Start unverändert. Zufällige identische
+RGB-Tripel sind zulässig; eine kanalweise Gleichverteilung garantiert keine
+Gleichverteilung wahrgenommener Farben.
 
-Die aktuelle Modulstruktur folgt diesen Schichten unter `src/rgb_website/`.
-Die Versuchspalette und Emotionsauswahl liegen zentral in `experiment.py`.
-API-Schemas und Routen bleiben von Service- und Repository-Logik getrennt.
-Die Oberfläche liegt in `static/` und enthält keine eigene Versuchs- oder
-Zufallslogik. Es gibt bewusst noch keine Exportfunktion oder
-Administrationsauthentifizierung.
+## API und Datenfluss
 
-## Phase-3-Oberfläche
-
-`GET /` liefert die statische Studienoberfläche. Das Frontend ruft ausschließlich
-die vorhandenen Endpunkte `POST /api/experiments`,
-`GET /api/experiments/{session_id}` und
-`POST /api/experiments/{session_id}/responses` auf. Es speichert keine
-Versuchs- oder Antwortdaten in `localStorage` oder `sessionStorage`.
-
-## Phase-2-API
-
-- `POST /api/experiments` startet einen Versuch mit zufälliger, persistierter
-  Reihenfolge und liefert die erste Farbe.
+- `POST /api/experiments` startet einen Versuch anhand von
+  `DEFAULT_TRIAL_COUNT`.
 - `GET /api/experiments/{session_id}` liefert Status, Fortschritt und nur die
-  nächste noch zu beantwortende Farbe.
-- `POST /api/experiments/{session_id}/responses` akzeptiert `color_id`, eine
-  Emotion, die Durchgangsnummer und die Versuchsversionskennung.
+  nächste Farbe.
+- `POST /api/experiments/{session_id}/responses` validiert und speichert eine
+  Emotion für die aktuelle Farbe.
+- `GET /api/admin/export` liefert nach `X-Admin-Token`-Authentifizierung den
+  CSV-Export.
 
-RGB-Werte werden nicht vom Client akzeptiert, sondern aus der unveränderlichen
-Farbzuordnung des Versuchs übernommen. Ein Versuch wird nach zehn Antworten
-auf `completed` gesetzt. Unbekannte, nicht aktuelle oder bereits beantwortete
-Farben werden abgelehnt.
+RGB-Werte werden nie aus Antwortdaten des Clients übernommen. Ein Versuch
+wird nach seinem unveränderlichen `trial_count`-Snapshot abgeschlossen.
+Doppelte Antworten werden zusätzlich durch Datenbank-Unique-Constraints
+verhindert. Antworten und Statusänderung werden in einer Transaktion
+gespeichert.
 
-## Datenfluss und Grenzen
+## Admin-Export
 
-Teilnehmende sollen keine Konten benötigen. Eine zufällige Sitzungskennung
-ordnet Antworten einer Umfragesitzung zu. Antworten werden erst nach
-bestätigter Speicherung an den nächsten Durchgang weitergegeben. Der
-Administrationsbereich bleibt von den öffentlichen Umfragefunktionen getrennt
-und schützt CSV-Exporte durch Authentifizierung.
+Das Admin-Token kommt ausschließlich aus `ADMIN_API_TOKEN` und wird mit
+`secrets.compare_digest` verglichen. Fehlt es, bleibt der Export geschlossen.
+Der Export ist UTF-8, sortiert nach Sitzung und Durchgang, verwendet
+`Cache-Control: no-store` und schützt Textfelder mit führendem `=`, `+`, `-`
+oder `@` durch ein Apostroph vor Spreadsheet-Formula-Injection.
 
-IP-Adressen werden nicht in der wissenschaftlichen Datenbank gespeichert.
-Server- und Proxy-Logs müssen auf betriebsnotwendige Informationen begrenzt
-werden. HTTPS ist für den öffentlichen Betrieb verpflichtend.
+Ein API-Token allein ersetzt keine sichere Produktionsbereitstellung:
+HTTPS, restriktive Serverkonfiguration, Zugriffsschutz, Rate-Limiting und
+angemessene Protokollierung bleiben erforderlich.
 
-## Noch zu entscheidende Punkte
+## Datenschutz- und Betriebsgrenzen
 
-Vor der Implementierung beziehungsweise Veröffentlichung müssen insbesondere
-die Farbauswahlstrategie, der Umgang mit identischen Farben, die
-Wiederaufnahme abgebrochener Sitzungen, die konkrete
-Administrationsauthentifizierung, Hosting und Protokollaufbewahrung festgelegt
-werden. Dieses Dokument stellt hierfür keine stillschweigenden Entscheidungen
-dar.
+Teilnehmende benötigen kein Konto. Namen, E-Mail-Adressen, IP-Adressen und
+weitere personenbezogene Daten werden nicht in der Forschungsdatenbank
+gespeichert. Die tatsächlichen Hosting-, Logging-, Backup- und
+Aufbewahrungsentscheidungen müssen vor dem Livegang festgelegt werden.
+
+Offen bleiben insbesondere die wissenschaftliche Freigabe der Zufallsstrategie,
+die Wiederaufnahme abgebrochener Sitzungen, Rate-Limiting, Produktionshosting
+und die rechtliche Prüfung.

@@ -1,6 +1,6 @@
-import random
 from dataclasses import dataclass
 from enum import StrEnum
+from secrets import randbelow
 
 
 class Emotion(StrEnum):
@@ -13,8 +13,9 @@ class Emotion(StrEnum):
     TRUST = "Vertrauen"
 
 
-PALETTE_VERSION = "1.0"
+PALETTE_VERSION = "random-rgb-1.0"
 TRIAL_COUNT = 10
+ALLOWED_TRIAL_COUNTS = (10, 15)
 
 
 @dataclass(frozen=True, slots=True)
@@ -25,26 +26,18 @@ class PaletteColor:
     blue: int
 
 
-PALETTE: tuple[PaletteColor, ...] = (
-    PaletteColor("red", 217, 75, 101),
-    PaletteColor("orange", 240, 145, 60),
-    PaletteColor("yellow", 238, 205, 74),
-    PaletteColor("green", 83, 166, 104),
-    PaletteColor("cyan", 61, 177, 183),
-    PaletteColor("blue", 42, 130, 190),
-    PaletteColor("purple", 126, 91, 166),
-    PaletteColor("pink", 216, 111, 157),
-    PaletteColor("brown", 145, 99, 67),
-    PaletteColor("gray", 126, 135, 143),
-    PaletteColor("navy", 43, 65, 105),
-    PaletteColor("teal", 47, 128, 119),
-)
+def generate_random_color(color_id: str) -> PaletteColor:
+    return PaletteColor(
+        id=color_id,
+        red=randbelow(256),
+        green=randbelow(256),
+        blue=randbelow(256),
+    )
 
 
-def select_palette_colors(
-    palette: tuple[PaletteColor, ...] = PALETTE,
-    count: int = TRIAL_COUNT,
-) -> list[PaletteColor]:
-    if count > len(palette):
-        raise ValueError("The palette does not contain enough distinct colors.")
-    return random.SystemRandom().sample(palette, count)
+def generate_random_colors(count: int = TRIAL_COUNT) -> list[PaletteColor]:
+    if count not in ALLOWED_TRIAL_COUNTS:
+        raise ValueError("Trial count must be 10 or 15.")
+    return [
+        generate_random_color(f"trial-{position}") for position in range(1, count + 1)
+    ]

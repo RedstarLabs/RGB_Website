@@ -2,71 +2,60 @@
 
 ## Status
 
-Dieses Datenwörterbuch ist die Phase-0-Spezifikation für die in Phase 1 und 2
-vorläufig implementierten SQLAlchemy-Modelle. Die Versuchsdurchführung nutzt
-eine versionierte Farbpalette; die endgültige wissenschaftliche
-Versuchsdefinition muss vor einer realen Erhebung bestätigt werden.
+Die Datenstruktur ist technisch implementiert, aber noch nicht für eine reale
+Erhebung wissenschaftlich freigegeben.
 
-## Versuch und Farbzuordnung
+## Versuch und Farben
 
 | Feld | Typ | Inhalt und Einschränkung |
 | --- | --- | --- |
-| `survey_sessions.id` | zufällige Zeichenkette | Nicht sprechende Versuchskennung ohne zusätzliche Personendaten. |
-| `survey_sessions.status` | `in_progress`/`completed` | Statusübergang nach zehn gültigen Antworten. |
-| `survey_sessions.palette_version` | Versionswert | Version der verwendeten festen Palette. |
-| `session_colors.color_id` | Zeichenkette | Stabile ID einer Palettefarbe. |
-| `session_colors.position` | Ganzzahl | Persistierte Position 1 bis 10 innerhalb des Versuchs. |
-| `session_colors.color_r/g/b` | Ganzzahlen | Zur ID gehörende RGB-Werte, jeweils 0 bis 255. |
+| `survey_sessions.id` | zufällige Zeichenkette | Nicht sprechende Versuchskennung ohne Personendaten. |
+| `survey_sessions.status` | Status | `in_progress` oder `completed`. |
+| `survey_sessions.experiment_version` | Zeichenkette | Version der Versuchsdefinition. |
+| `survey_sessions.palette_version` | Zeichenkette | `random-rgb-1.0`. |
+| `survey_sessions.trial_count` | Ganzzahl | Unveränderlicher Snapshot: ausschließlich 10 oder 15. |
+| `session_colors.color_id` | Zeichenkette | Positionsbezogene ID wie `trial-1`, keine Farbbezeichnung. |
+| `session_colors.position` | Ganzzahl | Position 1 bis 15 innerhalb der Sitzung. |
+| `session_colors.color_r/g/b` | Ganzzahlen | Tatsächlich erzeugte Werte, jeweils 0 bis 255. |
+
+Jede Farbe wird serverseitig mit kryptografisch unterstütztem Zufall erzeugt
+und dauerhaft gespeichert. RGB-Wiederholungen sind zulässig.
 
 ## Antwortdatensatz
 
 | Feld | Typ | Inhalt und Einschränkung |
 | --- | --- | --- |
-| `id` | technische Kennung | Interne Kennung; konkretes Format wird mit dem Datenbankschema festgelegt. |
-| `session_id` | Zeichenkette | Zufällige Kennung der Umfragesitzung; kein Personenbezug soll daraus abgeleitet werden können. |
-| `color_id` | Zeichenkette | Referenz auf eine dem Versuch zugeordnete Palettefarbe. |
-| `trial_number` | Ganzzahl | Durchgang innerhalb der Sitzung, vorgesehen 1 bis 10. |
-| `color_r` | Ganzzahl | Rotwert der angezeigten Farbe, 0 bis 255. |
-| `color_g` | Ganzzahl | Grünwert der angezeigten Farbe, 0 bis 255. |
-| `color_b` | Ganzzahl | Blauwert der angezeigten Farbe, 0 bis 255. |
-| `emotion` | Zeichenkette | Genau eine zum Zeitpunkt der Erhebung versionierte Emotionskategorie. |
-| `color_order` | Ganzzahl | Position der Farbe innerhalb der Sitzung. |
-| `experiment_version` | Versionswert | Version der Versuchsdefinition, damit Änderungen vergleichbar bleiben. |
+| `id` | technische Kennung | Interne Datenbank-ID. |
+| `session_id` | Zeichenkette | Referenz auf die Sitzung. |
+| `color_id` | Zeichenkette | Referenz auf eine Farbe dieser Sitzung. |
+| `trial_number` | Ganzzahl | Position des Durchgangs, 1 bis 15. |
+| `color_r/g/b` | Ganzzahlen | Snapshot der angezeigten RGB-Werte, 0 bis 255. |
+| `emotion` | Zeichenkette | Eine der sieben zentralen Emotionskategorien. |
+| `color_order` | Ganzzahl | Position der Farbe, 1 bis 15. |
+| `experiment_version` | Zeichenkette | Version der Versuchsdefinition. |
+| `response_timestamp` | Zeitstempel/null | Serverzeit; bei historischen Datensätzen eventuell nicht vorhanden. |
 
-Ein Erstellungszeitpunkt wird nur aufgenommen, wenn dafür vor der
-Implementierung ein dokumentierter Zweck festgestellt wurde. Namen,
-E-Mail-Adressen, Matrikelnummern und IP-Adressen gehören nicht zum
-wissenschaftlichen Antwortdatensatz.
+Unique-Constraints verhindern mehrere Antworten für dieselbe Sitzung und
+Farbe beziehungsweise denselben Durchgang. Historische Datensätze werden
+nicht durch erfundene RGB-Werte oder Zeitstempel ergänzt.
 
 ## Emotionskategorien
 
-Als vorläufige Standardkonfiguration sind Freude, Trauer, Wut, Angst, Ekel,
-Überraschung und Vertrauen vorgesehen. Die endgültige Liste und ihre
-Versionierung müssen vor Beginn einer realen Erhebung festgelegt werden.
-
-## Vorläufige Phase-2-Palette
-
-Die implementierte Palette hat die Version `1.0` und enthält die IDs `red`,
-`orange`, `yellow`, `green`, `cyan`, `blue`, `purple`, `pink`, `brown`, `gray`,
-`navy` und `teal`. Pro Versuch werden zehn unterschiedliche Farben ohne
-Wiederholung zufällig ausgewählt. Palette und Auswahlstrategie sind
-technische Phase-2-Festlegungen und müssen vor der realen Erhebung
-wissenschaftlich bestätigt und versioniert werden.
+Freude, Trauer, Wut, Angst, Ekel, Überraschung und Vertrauen sind die
+zentralen, vorläufigen Werte. Eine Änderung muss versioniert und vor einer
+Erhebung freigegeben werden.
 
 ## CSV-Export
 
-Der Export enthält genau eine Zeile pro Antwort und diese Spalten in der
-angegebenen Reihenfolge:
+Der Export enthält genau diese Spalten in dieser Reihenfolge:
 
 ```text
-session_id,trial_number,color_r,color_g,color_b,emotion,color_order,experiment_version
+session_id,session_status,experiment_version,trial_count,trial_number,color_id,color_r,color_g,color_b,emotion,response_timestamp
 ```
 
-Die Datei wird UTF-8-kodiert erzeugt. Spaltennamen, Reihenfolge und Datentypen
-bleiben stabil und werden mit der Implementierung getestet. Der Export darf
-nur nach erfolgreicher Administrator-Authentifizierung ausgeliefert werden
-und muss direkt mit pandas verarbeitbar sein.
-
-Die Beispielwerte aus der README sind synthetisch. Dieses Dokument legt keine
-Aufbewahrungsfrist oder Datenbanktechnologie für den Produktivbetrieb
-zusätzlich zur Architektur-Spezifikation fest.
+Er ist UTF-8-kodiert und verwendet CRLF-Zeilenenden. Es gibt eine Zeile pro
+gespeicherter Antwort, sortiert nach Sitzung und Durchgang. Unvollständige
+Sitzungen sind durch `session_status` und fehlende Zeilen erkennbar; fehlende
+Antworten werden nicht erfunden. Textfelder mit führendem `=`, `+`, `-` oder
+`@` werden mit einem Apostroph escaped, um Formelinterpretation in
+Tabellenprogrammen zu verhindern.

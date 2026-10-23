@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from rgb_website.config import get_settings
 from rgb_website.database.session import get_db
 from rgb_website.schemas import (
     ExperimentStateResponse,
@@ -30,6 +31,7 @@ def _state(service: SurveyService, session_id: str) -> ExperimentStateResponse:
         session_id=session.id,
         status=session.status,
         answered_count=len(session.responses),
+        total_count=session.trial_count,
         next_color=(
             {
                 "id": next_color.color_id,
@@ -54,7 +56,10 @@ def start_experiment(
     db: DatabaseSession,
 ) -> StartExperimentResponse:
     service = SurveyService(db)
-    session = service.create_session(uuid4().hex)
+    session = service.create_session(
+        uuid4().hex,
+        trial_count=get_settings().default_trial_count,
+    )
     return _state(service, session.id)
 
 

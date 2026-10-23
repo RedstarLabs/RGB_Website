@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Administrativer CSV-Export">
+    <title>Administration – Farb-Emotions-Studie</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="panel" aria-labelledby="admin-title">
+        <p class="eyebrow">Administration</p>
+        <h1 id="admin-title">Datenexport</h1>
+        <p class="muted">
+          Der Token wird nur für diese Seite im Arbeitsspeicher verwendet und
+          nicht gespeichert.
+        </p>
+        <form id="admin-form">
+          <label for="admin-token">Administrations-Token</label>
+          <input id="admin-token" name="admin-token" type="password" required
+            autocomplete="off">
+          <button class="primary-button" type="submit">CSV exportieren</button>
+        </form>
+        <p id="admin-message" class="message" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script src="/admin.js" defer></script>
+  </body>
+</html>

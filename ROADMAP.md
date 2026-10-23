@@ -105,15 +105,15 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 
 ### Aufgaben
 
-- [ ] Endpunkt zum Starten einer Umfragesitzung erstellen
-- [ ] Antwort-Endpunkt erstellen
-- [ ] Eingaben mit Pydantic validieren
-- [ ] Erlaubte Emotionen serverseitig prüfen
-- [ ] Durchgangsnummer und RGB-Werte serverseitig überprüfen
-- [ ] Idempotente Speicherung zur Vermeidung doppelter Antworten implementieren
-- [ ] Sitzungszustand und erlaubte Übergänge definieren
+- [x] Endpunkt zum Starten einer Umfragesitzung erstellen
+- [x] Antwort-Endpunkt erstellen
+- [x] Eingaben mit Pydantic validieren
+- [x] Erlaubte Emotionen serverseitig prüfen
+- [x] Durchgangsnummer und RGB-Werte serverseitig überprüfen
+- [x] Idempotente Speicherung zur Vermeidung doppelter Antworten implementieren
+- [x] Sitzungszustand und erlaubte Übergänge definieren
 - [ ] Unterbrochene Sitzungen robust behandeln
-- [ ] Transaktionen und konsistente Fehlerbehandlung implementieren
+- [x] Transaktionen und konsistente Fehlerbehandlung implementieren
 
 ### Akzeptanzkriterien
 
@@ -127,12 +127,12 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 
 ### Aufgaben
 
-- [ ] Exportservice implementieren
-- [ ] CSV-Spalten verbindlich definieren
-- [ ] UTF-8 und korrekte Behandlung von Umlauten sicherstellen
-- [ ] Eine Zeile pro Antwort exportieren
-- [ ] Sitzungskennung, RGB-Werte, Emotion und Versuchsreihenfolge exportieren
-- [ ] Export vor unberechtigtem Zugriff schützen
+- [x] Exportservice implementieren
+- [x] CSV-Spalten verbindlich definieren
+- [x] UTF-8 und korrekte Behandlung von Umlauten sicherstellen
+- [x] Eine Zeile pro Antwort exportieren
+- [x] Sitzungskennung, RGB-Werte, Emotion und Versuchsreihenfolge exportieren
+- [x] Export vor unberechtigtem Zugriff schützen
 - [ ] Export mit pandas testen
 - [ ] Validierungsbericht für unvollständige Sitzungen erstellen
 - [ ] Dokumentation für wissenschaftliche Auswertungen erstellen
@@ -150,9 +150,9 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 
 ### Aufgaben
 
-- [ ] Separaten Administrationsbereich implementieren
-- [ ] Sichere Authentifizierung auswählen und umsetzen
-- [ ] Administratorzugriffe auf Exportfunktionen begrenzen
+- [x] Separaten Administrationsbereich implementieren
+- [x] Sichere Authentifizierung auswählen und umsetzen
+- [x] Administratorzugriffe auf Exportfunktionen begrenzen
 - [ ] Sichere Session- beziehungsweise Token-Verwaltung festlegen
 - [ ] Schutz gegen Brute-Force-Versuche einrichten
 - [ ] Rate-Limiting für öffentliche Endpunkte implementieren

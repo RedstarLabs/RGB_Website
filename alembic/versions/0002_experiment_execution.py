@@ -14,6 +14,20 @@ down_revision = "0001_initial_schema"
 branch_labels = None
 depends_on = None
 
+RESPONSE_CHECKS = (
+    sa.CheckConstraint(
+        "trial_number BETWEEN 1 AND 10",
+        name="ck_responses_trial_number",
+    ),
+    sa.CheckConstraint("color_r BETWEEN 0 AND 255", name="ck_responses_color_r"),
+    sa.CheckConstraint("color_g BETWEEN 0 AND 255", name="ck_responses_color_g"),
+    sa.CheckConstraint("color_b BETWEEN 0 AND 255", name="ck_responses_color_b"),
+    sa.CheckConstraint(
+        "color_order BETWEEN 1 AND 10",
+        name="ck_responses_color_order",
+    ),
+)
+
 
 def upgrade() -> None:
     op.add_column(
@@ -56,8 +70,11 @@ def upgrade() -> None:
         ["session_id"],
         unique=False,
     )
-    with op.batch_alter_table("responses") as batch_op:
-        batch_op.add_column(sa.Column("color_id", sa.String(length=32)))
+    with op.batch_alter_table(
+        "responses",
+        table_args=list(RESPONSE_CHECKS),
+    ) as batch_op:
+        batch_op.add_column(sa.Column("color_id", sa.String(length=32), nullable=True))
         batch_op.create_unique_constraint(
             "uq_responses_session_color",
             ["session_id", "color_id"],

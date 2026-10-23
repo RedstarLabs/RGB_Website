@@ -2,43 +2,38 @@
 
 ## Vorläufiger Status
 
-Dieses Dokument ist eine technische Datenschutzanforderung für Phase 0 und
-keine Rechtsberatung, Datenschutzerklärung oder Bestätigung der
-DSGVO-Konformität. Die Anwendung ist nicht für eine reale Datenerhebung
-freigegeben.
+Dieses Dokument ist technische Spezifikation und keine Rechtsberatung oder
+Bestätigung der DSGVO-Konformität. Die Anwendung ist nicht für eine reale
+Datenerhebung freigegeben.
 
 ## Datenminimierung
 
-Erhoben werden sollen ausschließlich die für die Forschungsfrage und den
-Ablauf notwendigen Antwortdaten: zufällige Sitzungskennung, Durchgang,
-angezeigte RGB-Werte, Emotion, Reihenfolge und versionierte
-Versuchsdefinition. Namen, E-Mail-Adressen und Matrikelnummern werden nicht
-erhoben. Teilnehmende benötigen kein Benutzerkonto.
+Gespeichert werden nur zufällige Sitzungskennung, Versuchsversion,
+Versuchslänge, Durchgang, angezeigte RGB-Werte, Emotion, Reihenfolge und
+optionaler serverseitiger Antwortzeitpunkt. Namen, E-Mail-Adressen,
+Matrikelnummern, Teilnehmerkonten und IP-Adressen gehören nicht zur
+Forschungsdatenbank.
 
-IP-Adressen werden nicht in der wissenschaftlichen Datenbank gespeichert.
-Cookies, Tracking-Pixel, Analyseanbieter, Werbung und unnötige externe
-Dienste sind nicht vorgesehen. Technische Server- und Proxy-Logs müssen auf
-das notwendige Maß begrenzt werden.
+Die RGB-Erzeugung ist kanalweise gleichverteilt über `0..255`; das ist keine
+gleichmäßige Verteilung wahrgenommener Farben. Zufällige RGB-Wiederholungen
+werden nicht entfernt, um die Verteilung nicht nachträglich zu verändern.
 
-## Technische Schutzmaßnahmen
+## Export und Zugangsschutz
 
-- Öffentlicher Betrieb ausschließlich über HTTPS.
-- Datenbankzugriff nur vom Backend aus.
-- CSV-Exporte ausschließlich nach Administrator-Authentifizierung.
-- Geheimnisse und Zugangsdaten nur über die Laufzeitumgebung, nie im
-  Repository.
-- Backups, Löschung und Aufbewahrung werden vor dem Livegang dokumentiert.
+CSV wird ausschließlich über `GET /api/admin/export` und ein in der Umgebung
+gesetztes `ADMIN_API_TOKEN` ausgeliefert. Das Token wird nicht in URLs,
+Antworten, Logs oder exportierten Daten gespeichert. Die Admin-Seite hält es
+nur im Arbeitsspeicher und leert das Eingabefeld nach einem Export.
+`Cache-Control: no-store` reduziert das Risiko lokaler Cacheablage. Der Export
+enthält keine zusätzlichen personenbezogenen Daten. Formula-Injection-Schutz
+verhindert die automatische Ausführung führender Formeln in Tabellenprogrammen.
 
-## Offene rechtliche und betriebliche Entscheidungen
+Ein API-Token ersetzt keine HTTPS-Pflicht, restriktive Serverkonfiguration,
+Zugriffskontrollen oder sichere Betriebs- und Backup-Prozesse.
 
-Vor Veröffentlichung müssen verantwortliche Stelle, Kontaktmöglichkeit,
-Rechtsgrundlage, erforderliche Einwilligungsinformationen, Verfahren für
-Widerruf und Löschanfragen, Aufbewahrungsfristen, Hosting-Anbieter,
-Auftragsverarbeitung, Hosting-Logs, mögliche Drittlandtransfers sowie die
-Notwendigkeit einer Datenschutz-Folgenabschätzung oder Ethikprüfung geklärt
-werden. Auch das konkrete Authentifizierungsverfahren für Administratoren ist
-noch offen.
+## Offene Entscheidungen
 
-Die veröffentlichten Datenschutzhinweise müssen die tatsächlich eingesetzte
-Bereitstellung und alle Datenflüsse abbilden. Bis dahin darf das Projekt weder
-vollständige Anonymität noch DSGVO-Konformität behaupten.
+Vor Veröffentlichung müssen verantwortliche Stelle, Kontakt, Rechtsgrundlage,
+Einwilligung, Widerruf und Löschanfragen, Aufbewahrung, Hosting,
+Auftragsverarbeitung, Logs, Backups, Drittlandtransfers und gegebenenfalls
+Ethik- oder Datenschutz-Folgenprüfung geklärt werden.

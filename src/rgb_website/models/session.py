@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Enum, String
+from sqlalchemy import CheckConstraint, Enum, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from rgb_website.database.base import Base
@@ -15,6 +15,9 @@ if TYPE_CHECKING:
 
 class SurveySession(Base):
     __tablename__ = "survey_sessions"
+    __table_args__ = (
+        CheckConstraint("trial_count IN (10, 15)", name="ck_sessions_trial_count"),
+    )
 
     id: Mapped[str] = mapped_column(String(128), primary_key=True)
     experiment_version: Mapped[str] = mapped_column(
@@ -36,6 +39,11 @@ class SurveySession(Base):
             length=11,
         ),
         default="in_progress",
+        nullable=False,
+    )
+    trial_count: Mapped[int] = mapped_column(
+        Integer,
+        default=10,
         nullable=False,
     )
 

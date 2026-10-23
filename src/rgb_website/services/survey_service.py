@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -5,7 +7,7 @@ from rgb_website.experiment import (
     PALETTE_VERSION,
     TRIAL_COUNT,
     Emotion,
-    select_palette_colors,
+    generate_random_colors,
 )
 from rgb_website.models import Response, SessionColor, SurveySession
 from rgb_website.repositories import ResponseRepository, SurveySessionRepository
@@ -21,17 +23,22 @@ class SurveyService:
         self,
         session_id: str,
         experiment_version: str = PALETTE_VERSION,
+        trial_count: int = TRIAL_COUNT,
     ) -> SurveySession:
-        if experiment_version != PALETTE_VERSION:
-            raise ValueError("Experiment version is not supported.")
+        if trial_count not in (10, 15):
+            raise ValueError("Trial count must be 10 or 15.")
         survey_session = SurveySession(
             id=session_id,
             experiment_version=experiment_version,
             palette_version=PALETTE_VERSION,
+            trial_count=trial_count,
         )
         try:
             self.sessions.add(survey_session)
-            for position, color in enumerate(select_palette_colors(), start=1):
+            for position, color in enumerate(
+                generate_random_colors(trial_count),
+                start=1,
+            ):
                 self.sessions.add_color(
                     SessionColor(
                         session_id=session_id,
@@ -88,10 +95,11 @@ class SurveyService:
             emotion=emotion,
             color_order=next_color.position,
             experiment_version=experiment_version,
+            response_timestamp=datetime.now(UTC),
         )
         try:
             self.responses.add(response)
-            if len(session.responses) + 1 == TRIAL_COUNT:
+            if len(session.responses) + 1 == session.trial_count:
                 session.status = "completed"
             self.db.commit()
         except IntegrityError:
