@@ -2,9 +2,9 @@
 
 ## Geltungsbereich
 
-Dieses Dokument beschreibt die für Phase 0 festgelegten Leitplanken. Die
-Anwendung ist noch nicht implementiert und nicht für eine reale Erhebung
-freigegeben.
+Dieses Dokument beschreibt die für Phase 0 festgelegten Leitplanken und die
+in Phase 1 implementierte technische Grundlage. Die Anwendung ist nicht für
+eine reale Erhebung freigegeben.
 
 ## Zielarchitektur
 
@@ -21,7 +21,8 @@ entstehen:
   Frontend-Framework ist derzeit nicht vorgesehen.
 
 Diese Komponenten sind Zielentscheidungen aus der Projektspezifikation. Die
-Implementierung erfolgt erst in den folgenden Roadmap-Phasen.
+minimale Backend- und Datenbankgrundlage ist in Phase 1 umgesetzt; spätere
+Phasen ergänzen die fachliche Umfragelogik.
 
 ## Geplante Schichten
 
@@ -34,8 +35,9 @@ Implementierung erfolgt erst in den folgenden Roadmap-Phasen.
 5. Darstellungs- und statische Ressourcen: serverseitige Templates, CSS und
    JavaScript ohne Tracking- oder Werbeskripte.
 
-Die genaue Modulstruktur wird mit der jeweiligen Implementierung festgelegt;
-dieses Dokument erzeugt bewusst kein leeres Gerüst für spätere Phasen.
+Die aktuelle Modulstruktur folgt diesen Schichten unter `src/rgb_website/`.
+Sie enthält bewusst noch keine Oberfläche, Farbauswahl, Exportfunktion oder
+Administrationsauthentifizierung.
 
 ## Datenfluss und Grenzen
 

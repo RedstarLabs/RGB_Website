@@ -7,10 +7,17 @@ authors = [
     { name = "RedstarLabs", email = "337061297+RedstarLabs@users.noreply.github.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "alembic>=1.14",
+    "fastapi>=0.115",
+    "pydantic-settings>=2.7",
+    "sqlalchemy>=2.0",
+    "uvicorn>=0.34",
+]
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28",
     "pytest>=8.0",
     "ruff>=0.9",
 ]

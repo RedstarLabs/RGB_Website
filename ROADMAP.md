@@ -33,24 +33,24 @@ Die Entwicklung erfolgt inkrementell. Jede Phase wird erst abgeschlossen, wenn i
 
 ### Aufgaben
 
-- [ ] FastAPI-Anwendung erstellen
-- [ ] Konfiguration über Umgebungsvariablen einführen
-- [ ] SQLAlchemy einrichten
-- [ ] SQLite für lokale Entwicklung konfigurieren
-- [ ] PostgreSQL-Konfiguration für Produktion vorsehen
-- [ ] Datenbankmigrationen mit Alembic einrichten
-- [ ] Datenmodell für Umfragesitzungen erstellen
-- [ ] Datenmodell für einzelne Antworten erstellen
-- [ ] Datenbankzugriffe über Repository-Funktionen kapseln
-- [ ] Health-Endpoint ohne sensible Informationen implementieren
+- [x] FastAPI-Anwendung erstellen
+- [x] Konfiguration über Umgebungsvariablen einführen
+- [x] SQLAlchemy einrichten
+- [x] SQLite für lokale Entwicklung konfigurieren
+- [x] PostgreSQL-Konfiguration für Produktion vorsehen
+- [x] Datenbankmigrationen mit Alembic einrichten
+- [x] Datenmodell für Umfragesitzungen erstellen
+- [x] Datenmodell für einzelne Antworten erstellen
+- [x] Datenbankzugriffe über Repository-Funktionen kapseln
+- [x] Health-Endpoint ohne sensible Informationen implementieren
 
 ### Akzeptanzkriterien
 
-- Die Anwendung startet lokal.
-- Datenbankmigrationen lassen sich anwenden und nachvollziehen.
-- Sitzungen und Antworten können gespeichert und gelesen werden.
-- Fehlerhafte Daten werden nicht gespeichert.
-- Datenbankzugänge sind konfigurierbar und nicht im Quellcode hinterlegt.
+- [x] Die Anwendung startet lokal.
+- [x] Datenbankmigrationen lassen sich anwenden und nachvollziehen.
+- [x] Sitzungen und Antworten können gespeichert und gelesen werden.
+- [x] Fehlerhafte Daten werden nicht gespeichert.
+- [x] Datenbankzugänge sind konfigurierbar und nicht im Quellcode hinterlegt.
 
 ## Phase 2 – Versuchslogik und Farbzufall
 

@@ -2,8 +2,9 @@
 
 ## Status
 
-Dieses Datenwörterbuch ist die Phase-0-Spezifikation. Es beschreibt das
-vorgesehene Antwortformat, implementiert aber noch keine Datenbankmodelle.
+Dieses Datenwörterbuch ist die Phase-0-Spezifikation für die in Phase 1
+vorläufig implementierten SQLAlchemy-Modelle. Fachliche Regeln der
+Versuchslogik werden in späteren Phasen ergänzt.
 
 ## Antwortdatensatz
 
