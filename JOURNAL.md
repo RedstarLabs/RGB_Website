@@ -39,3 +39,24 @@ implementiert.
 Geprüft wurden der lokale Uvicorn-Start mit erfolgreichem Health-Aufruf,
 Alembic `upgrade head` und `current`, fünf pytest-Tests, Ruff sowie
 `git diff --check`. Ein Commit wurde nicht erstellt.
+
+## 2026-10-23 – Phase 2: Versuchsdurchführung und Antwort-API
+
+Eine vorläufige, versionierte RGB-Palette (`1.0`) und die sieben zentralen
+Emotionswerte wurden implementiert. Beim Start werden zehn unterschiedliche
+Farben ohne Wiederholung zufällig ausgewählt und als `session_colors`
+persistent mit ihrer Position gespeichert. Versuche besitzen die Zustände
+`in_progress` und `completed`; nach zehn gültigen Antworten wird der Versuch
+abgeschlossen.
+
+Die API stellt Start-, Status- und Antwort-Endpunkte bereit. Statusantworten
+enthalten nur Fortschritt und die nächste Farbe. RGB-Werte werden serverseitig
+aus der persistenten Palette übernommen; ungültige, unbekannte, nicht aktuelle
+oder doppelte Antworten werden abgelehnt. Eine Alembic-Migration ergänzt die
+Versuchs- und Farbzuordnungsdaten.
+
+Die Palette und die Auswahlstrategie sind vorläufige technische
+Festlegungen. Vor einer realen Erhebung müssen sie wissenschaftlich bestätigt
+und zusammen mit dem Umgang mit Abbrüchen und Wiederaufnahme verbindlich
+festgelegt werden. Oberfläche, CSV-Export und Administration bleiben
+außerhalb dieser Phase.

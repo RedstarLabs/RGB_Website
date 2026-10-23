@@ -5,7 +5,7 @@ from sqlalchemy import engine_from_config, pool
 from alembic import context
 from rgb_website.config import get_settings
 from rgb_website.database.base import Base
-from rgb_website.models import Response, SurveySession  # noqa: F401
+from rgb_website.models import Response, SessionColor, SurveySession  # noqa: F401
 
 config = context.config
 settings = get_settings()

@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from rgb_website.models import SurveySession
+from rgb_website.models import SessionColor, SurveySession
 
 
 class SurveySessionRepository:
@@ -17,3 +17,8 @@ class SurveySessionRepository:
         return self.db.scalar(
             select(SurveySession).where(SurveySession.id == session_id)
         )
+
+    def add_color(self, color: SessionColor) -> SessionColor:
+        self.db.add(color)
+        self.db.flush()
+        return color

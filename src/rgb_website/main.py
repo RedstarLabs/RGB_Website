@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from rgb_website.api import health_router
+from rgb_website.api.experiment import router as experiment_router
 
 
 def create_app() -> FastAPI:
@@ -12,6 +13,7 @@ def create_app() -> FastAPI:
         version="0.1.0",
     )
     app.include_router(health_router)
+    app.include_router(experiment_router)
     return app
 
 

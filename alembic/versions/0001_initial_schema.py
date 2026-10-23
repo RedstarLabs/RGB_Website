@@ -33,11 +33,17 @@ def upgrade() -> None:
         sa.Column("emotion", sa.String(length=64), nullable=False),
         sa.Column("color_order", sa.Integer(), nullable=False),
         sa.Column("experiment_version", sa.String(length=32), nullable=False),
-        sa.CheckConstraint("trial_number BETWEEN 1 AND 10"),
-        sa.CheckConstraint("color_r BETWEEN 0 AND 255"),
-        sa.CheckConstraint("color_g BETWEEN 0 AND 255"),
-        sa.CheckConstraint("color_b BETWEEN 0 AND 255"),
-        sa.CheckConstraint("color_order BETWEEN 1 AND 10"),
+        sa.CheckConstraint(
+            "trial_number BETWEEN 1 AND 10",
+            name="ck_responses_trial_number",
+        ),
+        sa.CheckConstraint("color_r BETWEEN 0 AND 255", name="ck_responses_color_r"),
+        sa.CheckConstraint("color_g BETWEEN 0 AND 255", name="ck_responses_color_g"),
+        sa.CheckConstraint("color_b BETWEEN 0 AND 255", name="ck_responses_color_b"),
+        sa.CheckConstraint(
+            "color_order BETWEEN 1 AND 10",
+            name="ck_responses_color_order",
+        ),
         sa.ForeignKeyConstraint(
             ["session_id"],
             ["survey_sessions.id"],

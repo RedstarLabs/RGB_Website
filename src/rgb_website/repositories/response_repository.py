@@ -20,3 +20,6 @@ class ResponseRepository:
             .order_by(Response.trial_number)
         )
         return list(self.db.scalars(statement))
+
+    def count_for_session(self, session_id: str) -> int:
+        return len(self.get_for_session(session_id))

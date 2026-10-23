@@ -1,7 +1,13 @@
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from rgb_website.models import Response, SurveySession
+from rgb_website.experiment import (
+    PALETTE_VERSION,
+    TRIAL_COUNT,
+    Emotion,
+    select_palette_colors,
+)
+from rgb_website.models import Response, SessionColor, SurveySession
 from rgb_website.repositories import ResponseRepository, SurveySessionRepository
 
 
@@ -14,44 +20,79 @@ class SurveyService:
     def create_session(
         self,
         session_id: str,
-        experiment_version: str,
+        experiment_version: str = PALETTE_VERSION,
     ) -> SurveySession:
+        if experiment_version != PALETTE_VERSION:
+            raise ValueError("Experiment version is not supported.")
         survey_session = SurveySession(
             id=session_id,
             experiment_version=experiment_version,
+            palette_version=PALETTE_VERSION,
         )
         try:
             self.sessions.add(survey_session)
+            for position, color in enumerate(select_palette_colors(), start=1):
+                self.sessions.add_color(
+                    SessionColor(
+                        session_id=session_id,
+                        color_id=color.id,
+                        position=position,
+                        color_r=color.red,
+                        color_g=color.green,
+                        color_b=color.blue,
+                    )
+                )
             self.db.commit()
         except IntegrityError:
             self.db.rollback()
             raise
         return survey_session
 
+    def get_next_color(self, session: SurveySession) -> SessionColor | None:
+        answered_ids = {response.color_id for response in session.responses}
+        return next(
+            (color for color in session.colors if color.color_id not in answered_ids),
+            None,
+        )
+
     def add_response(
         self,
         *,
         session_id: str,
+        color_id: str,
         trial_number: int,
-        color_r: int,
-        color_g: int,
-        color_b: int,
         emotion: str,
-        color_order: int,
         experiment_version: str,
     ) -> Response:
+        session = self.sessions.get(session_id)
+        if session is None:
+            raise LookupError("Unknown survey session.")
+        if session.status != "in_progress":
+            raise ValueError("Survey session is already completed.")
+        next_color = self.get_next_color(session)
+        if next_color is None or next_color.color_id != color_id:
+            raise ValueError("Color is not the current color for this session.")
+        if trial_number != next_color.position:
+            raise ValueError("Trial number does not match the current color.")
+        if experiment_version != session.experiment_version:
+            raise ValueError("Experiment version does not match the session.")
+        if emotion not in {item.value for item in Emotion}:
+            raise ValueError("Emotion is not allowed.")
         response = Response(
             session_id=session_id,
+            color_id=color_id,
             trial_number=trial_number,
-            color_r=color_r,
-            color_g=color_g,
-            color_b=color_b,
+            color_r=next_color.color_r,
+            color_g=next_color.color_g,
+            color_b=next_color.color_b,
             emotion=emotion,
-            color_order=color_order,
+            color_order=next_color.position,
             experiment_version=experiment_version,
         )
         try:
             self.responses.add(response)
+            if len(session.responses) + 1 == TRIAL_COUNT:
+                session.status = "completed"
             self.db.commit()
         except IntegrityError:
             self.db.rollback()

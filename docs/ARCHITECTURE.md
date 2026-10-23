@@ -20,9 +20,9 @@ entstehen:
 - HTML, CSS und JavaScript bilden die Oberfläche. Ein separates
   Frontend-Framework ist derzeit nicht vorgesehen.
 
-Diese Komponenten sind Zielentscheidungen aus der Projektspezifikation. Die
-minimale Backend- und Datenbankgrundlage ist in Phase 1 umgesetzt; spätere
-Phasen ergänzen die fachliche Umfragelogik.
+Die minimale Backend- und Datenbankgrundlage ist in Phase 1 umgesetzt. Phase
+2 ergänzt die fachliche Versuchsdurchführung über eine API, ohne bereits eine
+Benutzeroberfläche, Exporte oder Administration einzuführen.
 
 ## Geplante Schichten
 
@@ -36,8 +36,24 @@ Phasen ergänzen die fachliche Umfragelogik.
    JavaScript ohne Tracking- oder Werbeskripte.
 
 Die aktuelle Modulstruktur folgt diesen Schichten unter `src/rgb_website/`.
-Sie enthält bewusst noch keine Oberfläche, Farbauswahl, Exportfunktion oder
+Die Versuchspalette und Emotionsauswahl liegen zentral in `experiment.py`.
+API-Schemas und Routen bleiben von Service- und Repository-Logik getrennt. Es
+gibt bewusst noch keine Oberfläche, Exportfunktion oder
 Administrationsauthentifizierung.
+
+## Phase-2-API
+
+- `POST /api/experiments` startet einen Versuch mit zufälliger, persistierter
+  Reihenfolge und liefert die erste Farbe.
+- `GET /api/experiments/{session_id}` liefert Status, Fortschritt und nur die
+  nächste noch zu beantwortende Farbe.
+- `POST /api/experiments/{session_id}/responses` akzeptiert `color_id`, eine
+  Emotion, die Durchgangsnummer und die Versuchsversionskennung.
+
+RGB-Werte werden nicht vom Client akzeptiert, sondern aus der unveränderlichen
+Farbzuordnung des Versuchs übernommen. Ein Versuch wird nach zehn Antworten
+auf `completed` gesetzt. Unbekannte, nicht aktuelle oder bereits beantwortete
+Farben werden abgelehnt.
 
 ## Datenfluss und Grenzen
 

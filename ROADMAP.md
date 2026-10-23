@@ -56,23 +56,23 @@ Die Entwicklung erfolgt inkrementell. Jede Phase wird erst abgeschlossen, wenn i
 
 ### Aufgaben
 
-- [ ] Sieben Emotionskategorien zentral definieren
-- [ ] RGB-Datentyp und Wertebereich von 0 bis 255 validieren
-- [ ] Strategie zur Farbauswahl implementieren
-- [ ] Genau zehn Farben pro Sitzung erzeugen
-- [ ] Zufallsstrategie und Versuchsparameter versionieren
-- [ ] Farbwerte und Reihenfolge für jede Sitzung festhalten
-- [ ] Festlegen, ob identische Farben innerhalb einer Sitzung ausgeschlossen werden
-- [ ] Festlegen, ob Teilnehmende dieselbe Farbpalette erhalten oder vollständig unabhängige Zufallsfarben
+- [x] Sieben Emotionskategorien zentral definieren
+- [x] RGB-Datentyp und Wertebereich von 0 bis 255 validieren
+- [x] Strategie zur Farbauswahl implementieren
+- [x] Genau zehn Farben pro Sitzung erzeugen
+- [x] Zufallsstrategie und Versuchsparameter versionieren
+- [x] Farbwerte und Reihenfolge für jede Sitzung festhalten
+- [x] Festlegen, ob identische Farben innerhalb einer Sitzung ausgeschlossen werden
+- [x] Festlegen, ob Teilnehmende dieselbe Farbpalette erhalten oder vollständig unabhängige Zufallsfarben
 - [ ] Verhalten bei Abbruch und Wiederaufnahme spezifizieren
 
 ### Akzeptanzkriterien
 
-- Jede Sitzung besitzt genau zehn geplante Durchgänge.
-- Jeder RGB-Wert ist gültig.
-- Die Reihenfolge lässt sich aus den gespeicherten Daten rekonstruieren.
-- Es gibt keine unbemerkte Änderung der Versuchsdefinition während einer Sitzung.
-- Die Zufallslogik ist unabhängig von der Darstellungsschicht testbar.
+- [x] Jede Sitzung besitzt genau zehn geplante Durchgänge.
+- [x] Jeder RGB-Wert ist gültig.
+- [x] Die Reihenfolge lässt sich aus den gespeicherten Daten rekonstruieren.
+- [x] Es gibt keine unbemerkte Änderung der Versuchsdefinition während einer Sitzung.
+- [x] Die Zufallslogik ist unabhängig von der Darstellungsschicht testbar.
 
 ### Wissenschaftlicher Hinweis
 
