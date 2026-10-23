@@ -82,24 +82,24 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 
 ### Aufgaben
 
-- [ ] Start- und Informationsseite erstellen
-- [ ] Große, gut sichtbare Farbanzeige implementieren
-- [ ] Sieben gut bedienbare Emotionsbuttons erstellen
-- [ ] Fortschrittsanzeige für zehn Durchgänge implementieren
-- [ ] Darstellung für Smartphones und Laptops optimieren
-- [ ] Tastaturbedienung und zugängliche Beschriftungen berücksichtigen
-- [ ] Ladezustand während der Speicherung anzeigen
-- [ ] Doppelte Klicks und Mehrfachübermittlungen verhindern
-- [ ] Abschlussseite erstellen
-- [ ] Fehler- und Wiederholungszustände gestalten
+- [x] Start- und Informationsseite erstellen
+- [x] Große, gut sichtbare Farbanzeige implementieren
+- [x] Sieben gut bedienbare Emotionsbuttons erstellen
+- [x] Fortschrittsanzeige für zehn Durchgänge implementieren
+- [x] Darstellung für Smartphones und Laptops optimieren
+- [x] Tastaturbedienung und zugängliche Beschriftungen berücksichtigen
+- [x] Ladezustand während der Speicherung anzeigen
+- [x] Doppelte Klicks und Mehrfachübermittlungen verhindern
+- [x] Abschlussseite erstellen
+- [x] Fehler- und Wiederholungszustände gestalten
 
 ### Akzeptanzkriterien
 
-- Auf kleinen und großen Bildschirmen ist die Umfrage benutzbar.
-- Es wird jeweils genau eine Farbe angezeigt.
-- Eine Antwort kann nicht versehentlich mehrfach gespeichert werden.
-- Die nächste Farbe erscheint erst nach bestätigter Speicherung.
-- Ein Netzwerkfehler führt nicht zu einem stillschweigenden Verlust der Antwort.
+- [x] Auf kleinen und großen Bildschirmen ist die Umfrage benutzbar.
+- [x] Es wird jeweils genau eine Farbe angezeigt.
+- [x] Eine Antwort kann nicht versehentlich mehrfach gespeichert werden.
+- [x] Die nächste Farbe erscheint erst nach bestätigter Speicherung.
+- [x] Ein Netzwerkfehler führt nicht zu einem stillschweigenden Verlust der Antwort.
 
 ## Phase 4 – Sofortige Speicherung und Sitzungsverwaltung
 

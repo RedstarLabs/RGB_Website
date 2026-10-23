@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Farb-Emotions-Studie mit zehn Farben.">
+    <title>Farb-Emotions-Studie</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section id="intro-view" class="panel" aria-labelledby="intro-title">
+        <p class="eyebrow">Forschungsstudie</p>
+        <h1 id="intro-title">Farben und Emotionen</h1>
+        <p>
+          In dieser kurzen Studie sehen Sie zehn Farben nacheinander. Wählen Sie
+          für jede Farbe genau eine Emotion aus.
+        </p>
+        <p class="muted">
+          Es werden keine Namen, Kontaktdaten oder Benutzerkonten benötigt.
+          Ihre Auswahl wird nach jeder Antwort gespeichert.
+        </p>
+        <button id="start-button" class="primary-button" type="button">
+          Studie beginnen
+        </button>
+        <p id="intro-error" class="message error" role="alert" hidden></p>
+      </section>
+
+      <section id="study-view" class="panel" aria-labelledby="study-title" hidden>
+        <div class="study-header">
+          <div>
+            <p class="eyebrow">Durchführung</p>
+            <h1 id="study-title">Welche Emotion passt zu dieser Farbe?</h1>
+          </div>
+          <p id="progress-label" class="progress-label" aria-live="polite">
+            Farbe 1 von 10
+          </p>
+        </div>
+
+        <div
+          id="color-swatch"
+          class="color-swatch"
+          role="img"
+          aria-label="Unbenannte Studienfarbe"
+        ></div>
+
+        <form id="emotion-form">
+          <fieldset>
+            <legend>Bitte wählen Sie genau eine Emotion.</legend>
+            <div id="emotion-options" class="emotion-grid"></div>
+          </fieldset>
+          <p id="study-message" class="message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <section id="complete-view" class="panel" aria-labelledby="complete-title" hidden>
+        <p class="eyebrow">Vielen Dank</p>
+        <h1 id="complete-title">Die Studie ist abgeschlossen.</h1>
+        <p>
+          Ihre zehn Antworten wurden erfolgreich gespeichert. Sie können dieses
+          Fenster jetzt schließen.
+        </p>
+      </section>
+
+      <p id="global-error" class="message error global-error" role="alert" hidden></p>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

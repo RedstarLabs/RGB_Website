@@ -21,8 +21,9 @@ entstehen:
   Frontend-Framework ist derzeit nicht vorgesehen.
 
 Die minimale Backend- und Datenbankgrundlage ist in Phase 1 umgesetzt. Phase
-2 ergänzt die fachliche Versuchsdurchführung über eine API, ohne bereits eine
-Benutzeroberfläche, Exporte oder Administration einzuführen.
+2 ergänzt die fachliche Versuchsdurchführung über eine API. Phase 3 bindet
+eine statische, serverseitig ausgelieferte HTML/CSS/JavaScript-Oberfläche an
+diese API an; Exporte und Administration bleiben späteren Phasen vorbehalten.
 
 ## Geplante Schichten
 
@@ -37,9 +38,18 @@ Benutzeroberfläche, Exporte oder Administration einzuführen.
 
 Die aktuelle Modulstruktur folgt diesen Schichten unter `src/rgb_website/`.
 Die Versuchspalette und Emotionsauswahl liegen zentral in `experiment.py`.
-API-Schemas und Routen bleiben von Service- und Repository-Logik getrennt. Es
-gibt bewusst noch keine Oberfläche, Exportfunktion oder
+API-Schemas und Routen bleiben von Service- und Repository-Logik getrennt.
+Die Oberfläche liegt in `static/` und enthält keine eigene Versuchs- oder
+Zufallslogik. Es gibt bewusst noch keine Exportfunktion oder
 Administrationsauthentifizierung.
+
+## Phase-3-Oberfläche
+
+`GET /` liefert die statische Studienoberfläche. Das Frontend ruft ausschließlich
+die vorhandenen Endpunkte `POST /api/experiments`,
+`GET /api/experiments/{session_id}` und
+`POST /api/experiments/{session_id}/responses` auf. Es speichert keine
+Versuchs- oder Antwortdaten in `localStorage` oder `sessionStorage`.
 
 ## Phase-2-API
 

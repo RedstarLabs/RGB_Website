@@ -60,3 +60,16 @@ Festlegungen. Vor einer realen Erhebung müssen sie wissenschaftlich bestätigt
 und zusammen mit dem Umgang mit Abbrüchen und Wiederaufnahme verbindlich
 festgelegt werden. Oberfläche, CSV-Export und Administration bleiben
 außerhalb dieser Phase.
+
+## 2026-10-23 – Phase 3: Responsive Studienoberfläche
+
+Die statische Oberfläche unter `/` wurde mit HTML, CSS und JavaScript an die
+bestehenden Versuchs-Endpunkte angebunden. Sie enthält Start-, Durchführungs-
+und Abschlussansicht, eine zentrale Farbanzeige, sieben gleichwertige
+Emotionstasten, Fortschrittsanzeige, Ladezustände und sichtbare Fehlerzustände.
+Mehrfachklicks werden während einer Anfrage verhindert; Antworten werden erst
+nach erfolgreicher Backend-Bestätigung zur nächsten Farbe fortgesetzt.
+
+Die Oberfläche erzeugt keine Farben und implementiert keine eigene
+Versuchslogik. Sie speichert keine Sitzungs- oder Antwortdaten im Browser.
+Exporte und Administrationsfunktionen bleiben außerhalb dieser Phase.
