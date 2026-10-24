@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from rgb_website.experiment import PALETTE_VERSION, Emotion
@@ -15,7 +17,7 @@ class ColorResponse(BaseModel):
 
 class ExperimentStateResponse(BaseModel):
     session_id: str
-    status: str
+    status: Literal["in_progress", "completed", "abandoned"]
     answered_count: int = Field(ge=0, le=15)
     total_count: int = Field(ge=10, le=15)
     next_color: ColorResponse | None

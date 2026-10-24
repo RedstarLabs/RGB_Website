@@ -26,11 +26,19 @@ def _state(service: SurveyService, session_id: str) -> ExperimentStateResponse:
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Experiment not found.",
         )
+    answered_count = len(session.responses)
+    if (session.status == "completed" and answered_count != session.trial_count) or (
+        session.status == "in_progress" and answered_count >= session.trial_count
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Experiment state is inconsistent.",
+        )
     next_color = service.get_next_color(session)
     return ExperimentStateResponse(
         session_id=session.id,
         status=session.status,
-        answered_count=len(session.responses),
+        answered_count=answered_count,
         total_count=session.trial_count,
         next_color=(
             {
@@ -99,3 +107,18 @@ def submit_response(
             detail="Response conflicts with the current experiment state.",
         ) from error
     return SubmitResponseResult(**_state(service, session_id).model_dump())
+
+
+@router.post("/{session_id}/abandon", response_model=ExperimentStateResponse)
+def abandon_experiment(
+    session_id: str,
+    db: DatabaseSession,
+) -> ExperimentStateResponse:
+    service = SurveyService(db)
+    try:
+        service.abandon_session(session_id)
+    except LookupError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error
+    except ValueError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return _state(service, session_id)

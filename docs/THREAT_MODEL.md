@@ -16,6 +16,7 @@
 | Spreadsheet-Formula-Injection | Führende `=`, `+`, `-`, `@` werden mit Apostroph escaped. |
 | Manipulierte RGB- oder Antwortdaten | Browser ist nicht vertrauenswürdig; RGB kommt nur aus `session_colors`, Schemas und DB-Constraints validieren Werte. |
 | Doppelübermittlung | Statusprüfung, aktuelle Farbe, Unique-Constraints und Transaktion. |
+| Antwort verloren nach Netzwerkfehler | Nach einem fehlgeschlagenen Submit wird der Sitzungsstatus erneut abgerufen; ein bereits gespeicherter Fortschritt wird nicht erneut gesendet. |
 | Unvollständiger Export | Exportiert jede gespeicherte Antwort; fehlende Antworten werden nicht fingiert. |
 | Verlust oder Änderung der Reihenfolge | RGB, Position und Versuchslänge werden beim Start persistiert. |
 | Übermäßige Datenerhebung | Keine Konten, IP-Adressen, Tracking-Skripte oder unnötige Felder. |
@@ -33,3 +34,8 @@ HTTPS, restriktive Serverkonfiguration, Rate-Limiting, Rotation,
 Fehlversuchsüberwachung, sichere Backups und Log-Aufbewahrung müssen vor dem
 Livegang ergänzt und geprüft werden. Rechtliche und wissenschaftliche
 Freigaben sind offen.
+
+Ein Browser-Reload kann ohne gespeicherte Sitzungskennung nicht automatisch
+fortgesetzt werden. Das reduziert lokale Datenspeicherung, hinterlässt aber
+unvollständige `in_progress`-Sitzungen, die in der Auswertung gesondert
+behandelt werden müssen.

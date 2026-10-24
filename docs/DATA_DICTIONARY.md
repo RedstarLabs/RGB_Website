@@ -10,7 +10,7 @@ Erhebung wissenschaftlich freigegeben.
 | Feld | Typ | Inhalt und Einschränkung |
 | --- | --- | --- |
 | `survey_sessions.id` | zufällige Zeichenkette | Nicht sprechende Versuchskennung ohne Personendaten. |
-| `survey_sessions.status` | Status | `in_progress` oder `completed`. |
+| `survey_sessions.status` | Status | `in_progress`, `completed` oder `abandoned`. |
 | `survey_sessions.experiment_version` | Zeichenkette | Version der Versuchsdefinition. |
 | `survey_sessions.palette_version` | Zeichenkette | `random-rgb-1.0`. |
 | `survey_sessions.trial_count` | Ganzzahl | Unveränderlicher Snapshot: ausschließlich 10 oder 15. |
@@ -36,8 +36,13 @@ und dauerhaft gespeichert. RGB-Wiederholungen sind zulässig.
 | `response_timestamp` | Zeitstempel/null | Serverzeit; bei historischen Datensätzen eventuell nicht vorhanden. |
 
 Unique-Constraints verhindern mehrere Antworten für dieselbe Sitzung und
-Farbe beziehungsweise denselben Durchgang. Historische Datensätze werden
-nicht durch erfundene RGB-Werte oder Zeitstempel ergänzt.
+Farbe beziehungsweise denselben Durchgang. Historische Datensätze werden nicht durch erfundene RGB-Werte oder
+Zeitstempel ergänzt. Der Zeitstempel ist deshalb nullable modelliert.
+
+`abandoned` kennzeichnet einen ausdrücklich abgebrochenen, unvollständigen
+Versuch. Fehlende Antworten werden weder ergänzt noch als abgeschlossen
+gezählt. Sitzungen, die lediglich durch einen Browser-Reload verlassen wurden,
+bleiben zunächst `in_progress`, bis eine explizite Abbruchaktion erfolgt.
 
 ## Emotionskategorien
 

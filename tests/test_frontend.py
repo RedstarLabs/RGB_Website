@@ -20,6 +20,15 @@ def test_start_page_and_static_assets_are_available() -> None:
     assert "/api/experiments/${encodeURIComponent(state.sessionId)}/responses" in (
         script.text
     )
+    assert "/api/experiments/${encodeURIComponent(state.sessionId)}/abandon" in (
+        script.text
+    )
+    assert 'abandonButton.addEventListener("click", abandonStudy)' in script.text
+    assert 'button.addEventListener("click", () => submitEmotion(emotion))' in (
+        script.text
+    )
+    assert "localStorage" not in script.text
+    assert "sessionStorage" not in script.text
     assert script.text.count('"Freude"') == 1
     assert script.text.count('"Trauer"') == 1
     assert script.text.count('"Wut"') == 1

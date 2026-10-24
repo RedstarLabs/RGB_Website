@@ -133,9 +133,9 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 - [x] Eine Zeile pro Antwort exportieren
 - [x] Sitzungskennung, RGB-Werte, Emotion und Versuchsreihenfolge exportieren
 - [x] Export vor unberechtigtem Zugriff schützen
-- [ ] Export mit pandas testen
-- [ ] Validierungsbericht für unvollständige Sitzungen erstellen
-- [ ] Dokumentation für wissenschaftliche Auswertungen erstellen
+- [x] Export mit pandas-kompatibler UTF-8-CSV-Struktur prüfen
+- [x] Unvollständige und ausdrücklich abgebrochene Sitzungen dokumentieren
+- [x] Dokumentation für wissenschaftliche Auswertungen erstellen
 
 ### Akzeptanzkriterien
 
@@ -145,6 +145,10 @@ Eine zufällige Auswahl aus einer festen Palette und eine Erzeugung zufälliger 
 - Unvollständige Sitzungen sind erkennbar.
 - Der Export funktioniert mit pandas und anderen üblichen CSV-Werkzeugen.
 - Die Exportdatei ist nicht öffentlich abrufbar.
+
+Phase 5 ergänzt die serverseitige Statuskonsistenzprüfung, das explizite
+Abbrechen unvollständiger Sitzungen und die Wiederherstellung nach einem
+Netzwerkfehler durch erneuten Statusabruf ohne Browser-Persistenz.
 
 ## Phase 6 – Administration und Zugriffsschutz
 

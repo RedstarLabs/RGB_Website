@@ -52,9 +52,9 @@ class Response(Base):
     emotion: Mapped[str] = mapped_column(String(64), nullable=False)
     color_order: Mapped[int] = mapped_column(Integer, nullable=False)
     experiment_version: Mapped[str] = mapped_column(String(32), nullable=False)
-    response_timestamp: Mapped[datetime] = mapped_column(
+    response_timestamp: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
-        nullable=False,
+        nullable=True,
     )
 
     session: Mapped[SurveySession] = relationship(back_populates="responses")

@@ -148,5 +148,6 @@ def test_named_constraints_are_present() -> None:
         "ck_responses_color_r",
         "ck_colors_position",
         "ck_sessions_trial_count",
+        "ck_sessions_status",
     } <= names
     Base.metadata.drop_all(engine)

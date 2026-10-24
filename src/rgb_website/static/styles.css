@@ -7,6 +7,20 @@
   font-synthesis: none;
 }
 
+.secondary-button {
+  margin-top: 1rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid #9aabb8;
+  border-radius: 0.5rem;
+  color: #17212b;
+  background: #fff;
+  cursor: pointer;
+}
+
+.secondary-button:hover {
+  background: #eef4f8;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -100,12 +114,14 @@ p {
 }
 
 .primary-button:disabled,
+.secondary-button:disabled,
 .emotion-button:disabled {
   cursor: wait;
   opacity: 0.65;
 }
 
 .primary-button:focus-visible,
+.secondary-button:focus-visible,
 .emotion-button:focus-visible {
   outline: 3px solid #e09f3e;
   outline-offset: 3px;

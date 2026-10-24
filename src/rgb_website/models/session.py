@@ -17,6 +17,10 @@ class SurveySession(Base):
     __tablename__ = "survey_sessions"
     __table_args__ = (
         CheckConstraint("trial_count IN (10, 15)", name="ck_sessions_trial_count"),
+        CheckConstraint(
+            "status IN ('in_progress', 'completed', 'abandoned')",
+            name="ck_sessions_status",
+        ),
     )
 
     id: Mapped[str] = mapped_column(String(128), primary_key=True)
@@ -34,6 +38,7 @@ class SurveySession(Base):
         Enum(
             "in_progress",
             "completed",
+            "abandoned",
             name="survey_status",
             native_enum=False,
             length=11,

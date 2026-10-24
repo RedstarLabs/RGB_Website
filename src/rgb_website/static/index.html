@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Farb-Emotions-Studie mit zehn Farben.">
+    <meta name="description" content="Farb-Emotions-Studie mit zufälligen RGB-Farben.">
     <title>Farb-Emotions-Studie</title>
     <link rel="stylesheet" href="/styles.css">
   </head>
@@ -13,7 +13,7 @@
         <p class="eyebrow">Forschungsstudie</p>
         <h1 id="intro-title">Farben und Emotionen</h1>
         <p>
-          In dieser kurzen Studie sehen Sie zehn Farben nacheinander. Wählen Sie
+          In dieser kurzen Studie sehen Sie zehn oder fünfzehn Farben nacheinander. Wählen Sie
           für jede Farbe genau eine Emotion aus.
         </p>
         <p class="muted">
@@ -50,6 +50,9 @@
             <div id="emotion-options" class="emotion-grid"></div>
           </fieldset>
           <p id="study-message" class="message" role="status" aria-live="polite"></p>
+          <button id="abandon-button" class="secondary-button" type="button">
+            Studie abbrechen
+          </button>
         </form>
       </section>
 
@@ -57,7 +60,7 @@
         <p class="eyebrow">Vielen Dank</p>
         <h1 id="complete-title">Die Studie ist abgeschlossen.</h1>
         <p>
-          Ihre zehn Antworten wurden erfolgreich gespeichert. Sie können dieses
+          Ihre Antworten wurden erfolgreich gespeichert. Sie können dieses
           Fenster jetzt schließen.
         </p>
       </section>

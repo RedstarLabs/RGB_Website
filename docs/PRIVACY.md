@@ -10,7 +10,7 @@ Datenerhebung freigegeben.
 
 Gespeichert werden nur zufällige Sitzungskennung, Versuchsversion,
 Versuchslänge, Durchgang, angezeigte RGB-Werte, Emotion, Reihenfolge und
-optionaler serverseitiger Antwortzeitpunkt. Namen, E-Mail-Adressen,
+optionaler serverseitiger Antwortzeitpunkt sowie der Sitzungsstatus. Namen, E-Mail-Adressen,
 Matrikelnummern, Teilnehmerkonten und IP-Adressen gehören nicht zur
 Forschungsdatenbank.
 
@@ -27,6 +27,12 @@ nur im Arbeitsspeicher und leert das Eingabefeld nach einem Export.
 `Cache-Control: no-store` reduziert das Risiko lokaler Cacheablage. Der Export
 enthält keine zusätzlichen personenbezogenen Daten. Formula-Injection-Schutz
 verhindert die automatische Ausführung führender Formeln in Tabellenprogrammen.
+
+Ein Browser-Reload speichert keine Sitzungskennung. Dadurch wird keine
+zusätzliche Wiederaufnahmekennung in Browser-Speichern oder URLs abgelegt.
+Ein unvollständiger Versuch bleibt bis zum expliziten Abbruch oder einer
+späteren Antwort als `in_progress` erhalten und muss bei der Auswertung als
+unvollständig behandelt werden.
 
 Ein API-Token ersetzt keine HTTPS-Pflicht, restriktive Serverkonfiguration,
 Zugriffskontrollen oder sichere Betriebs- und Backup-Prozesse.

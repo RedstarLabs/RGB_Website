@@ -56,6 +56,8 @@ class SurveyService:
         return survey_session
 
     def get_next_color(self, session: SurveySession) -> SessionColor | None:
+        if session.status != "in_progress":
+            return None
         answered_ids = {response.color_id for response in session.responses}
         return next(
             (color for color in session.colors if color.color_id not in answered_ids),
@@ -99,13 +101,23 @@ class SurveyService:
         )
         try:
             self.responses.add(response)
-            if len(session.responses) + 1 == session.trial_count:
+            if self.responses.count_for_session(session_id) == session.trial_count:
                 session.status = "completed"
             self.db.commit()
         except IntegrityError:
             self.db.rollback()
             raise
         return response
+
+    def abandon_session(self, session_id: str) -> SurveySession:
+        session = self.sessions.get(session_id)
+        if session is None:
+            raise LookupError("Unknown survey session.")
+        if session.status != "in_progress":
+            raise ValueError("Only an active survey session can be abandoned.")
+        session.status = "abandoned"
+        self.db.commit()
+        return session
 
     def get_session(self, session_id: str) -> SurveySession | None:
         return self.sessions.get(session_id)

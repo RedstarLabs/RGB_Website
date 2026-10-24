@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from rgb_website.models import Response
@@ -22,4 +22,9 @@ class ResponseRepository:
         return list(self.db.scalars(statement))
 
     def count_for_session(self, session_id: str) -> int:
-        return len(self.get_for_session(session_id))
+        return (
+            self.db.scalar(
+                select(func.count(Response.id)).where(Response.session_id == session_id)
+            )
+            or 0
+        )

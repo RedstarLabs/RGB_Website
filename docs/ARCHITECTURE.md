@@ -2,7 +2,7 @@
 
 ## Geltungsbereich
 
-Dieses Dokument beschreibt die bis Phase 4 implementierte technische
+Dieses Dokument beschreibt die bis Phase 5 implementierte technische
 Grundlage. Die Anwendung ist nicht für eine reale Erhebung freigegeben.
 
 ## Zielarchitektur und Schichten
@@ -36,6 +36,8 @@ Gleichverteilung wahrgenommener Farben.
   nächste Farbe.
 - `POST /api/experiments/{session_id}/responses` validiert und speichert eine
   Emotion für die aktuelle Farbe.
+- `POST /api/experiments/{session_id}/abandon` beendet einen unvollständigen
+  Versuch ausdrücklich als `abandoned`.
 - `GET /api/admin/export` liefert nach `X-Admin-Token`-Authentifizierung den
   CSV-Export.
 
@@ -43,7 +45,15 @@ RGB-Werte werden nie aus Antwortdaten des Clients übernommen. Ein Versuch
 wird nach seinem unveränderlichen `trial_count`-Snapshot abgeschlossen.
 Doppelte Antworten werden zusätzlich durch Datenbank-Unique-Constraints
 verhindert. Antworten und Statusänderung werden in einer Transaktion
-gespeichert.
+gespeichert. Der Abschlussstatus wird nur bei genau `trial_count` Antworten
+gesetzt; inkonsistente Status-/Antwortzahlen werden nicht als gültiger
+Studienzustand ausgeliefert.
+
+Netzwerkfehler nach einer Antwort lösen im Frontend einen erneuten
+Statusabruf aus. Dadurch wird eine bereits gespeicherte Antwort erkannt,
+ohne sie erneut zu senden. Wenn der Abruf ebenfalls fehlschlägt, bleibt die
+aktuelle Auswahl zur Wiederholung sichtbar. Sitzungsdaten werden nicht in
+`localStorage` oder `sessionStorage` gespeichert.
 
 ## Admin-Export
 
@@ -64,6 +74,10 @@ weitere personenbezogene Daten werden nicht in der Forschungsdatenbank
 gespeichert. Die tatsächlichen Hosting-, Logging-, Backup- und
 Aufbewahrungsentscheidungen müssen vor dem Livegang festgelegt werden.
 
-Offen bleiben insbesondere die wissenschaftliche Freigabe der Zufallsstrategie,
-die Wiederaufnahme abgebrochener Sitzungen, Rate-Limiting, Produktionshosting
-und die rechtliche Prüfung.
+Ein Reload beendet die Sitzung im Browser nicht automatisch: Ohne gespeicherte
+Sitzungskennung bleibt sie serverseitig `in_progress`, bis eine Antwort
+eintrifft oder der Abbruch-Endpunkt verwendet wird. Eine automatische
+Wiederaufnahme über Browser-Speicher ist bewusst nicht implementiert.
+Offen bleiben insbesondere die wissenschaftliche Freigabe der
+Zufallsstrategie, eine mögliche spätere Wiederaufnahme, Rate-Limiting,
+Produktionshosting und die rechtliche Prüfung.

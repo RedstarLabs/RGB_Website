@@ -92,6 +92,11 @@ Die Anwendung soll zunächst als schlanke, serverseitig ausgelieferte Web-App im
 10. Nach der gespeicherten Anzahl erfolgreicher Antworten wird eine Abschlussseite angezeigt.
 11. Ein berechtigter Administrator kann die Daten als CSV exportieren.
 
+Ein unvollständiger Versuch kann ausdrücklich abgebrochen werden und erhält
+den Status `abandoned`. Nach einem Reload wird keine Sitzungskennung im Browser
+gespeichert; ein nicht explizit abgebrochener Versuch bleibt daher serverseitig
+`in_progress` und wird im Export als unvollständig behandelt.
+
 Die Gleichverteilung jedes RGB-Kanals über `0..255` ist keine Gleichverteilung
 wahrgenommener Farben. Zufällige identische RGB-Tripel werden nicht nachträglich
 entfernt.

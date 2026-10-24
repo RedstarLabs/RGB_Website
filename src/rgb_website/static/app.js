@@ -23,6 +23,7 @@ const startButton = document.querySelector("#start-button");
 const introError = document.querySelector("#intro-error");
 const globalError = document.querySelector("#global-error");
 const studyMessage = document.querySelector("#study-message");
+const abandonButton = document.querySelector("#abandon-button");
 const progressLabel = document.querySelector("#progress-label");
 const colorSwatch = document.querySelector("#color-swatch");
 const emotionOptions = document.querySelector("#emotion-options");
@@ -47,6 +48,33 @@ function apiError(response) {
     return "Diese Antwort passt nicht mehr zum aktuellen Versuch.";
   }
   return "Die Anfrage konnte nicht verarbeitet werden.";
+}
+
+async function abandonStudy() {
+  if (state.busy || !state.sessionId) {
+    return;
+  }
+  state.busy = true;
+  setButtonsDisabled(true);
+  abandonButton.disabled = true;
+  setMessage(studyMessage, "Studie wird abgebrochen …");
+  try {
+    await request(
+      `/api/experiments/${encodeURIComponent(state.sessionId)}/abandon`,
+      { method: "POST" },
+    );
+    show(introView);
+    setMessage(
+      introError,
+      "Der unvollständige Versuch wurde beendet. Es wurden keine fehlenden Antworten ergänzt.",
+    );
+  } catch (error) {
+    setMessage(studyMessage, error.message, true);
+    setButtonsDisabled(false);
+    abandonButton.disabled = false;
+  } finally {
+    state.busy = false;
+  }
 }
 
 async function request(path, options = {}) {
@@ -88,6 +116,7 @@ function renderState(payload) {
   state.trialNumber = payload.answered_count + 1;
   state.color = payload.next_color;
   setButtonsDisabled(false);
+  abandonButton.disabled = false;
 
   if (payload.status === "completed" || payload.next_color === null) {
     show(completeView);
@@ -155,8 +184,28 @@ async function submitEmotion(emotion) {
     );
     renderState(payload);
   } catch (error) {
-    setMessage(studyMessage, error.message, true);
-    setButtonsDisabled(false);
+    const answeredBeforeRecovery = state.trialNumber - 1;
+    try {
+      const currentState = await request(
+        `/api/experiments/${encodeURIComponent(state.sessionId)}`,
+      );
+      renderState(currentState);
+      if (currentState.answered_count > answeredBeforeRecovery) {
+        setMessage(
+          studyMessage,
+          "Die Antwort wurde gespeichert. Der aktuelle Stand wurde geladen.",
+        );
+      } else {
+        setMessage(studyMessage, error.message, true);
+      }
+    } catch {
+      setMessage(
+        studyMessage,
+        `${error.message} Bitte versuchen Sie dieselbe Auswahl erneut.`,
+        true,
+      );
+      setButtonsDisabled(false);
+    }
   } finally {
     state.busy = false;
   }
@@ -174,4 +223,5 @@ function renderEmotionButtons() {
 }
 
 startButton.addEventListener("click", startStudy);
+abandonButton.addEventListener("click", abandonStudy);
 renderEmotionButtons();
